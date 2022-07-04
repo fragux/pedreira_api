@@ -103,9 +103,12 @@ connectMySQL(); // Start the process by calling this once
 
 //module.exports = mysqlDB;
 
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+app.use(cors(corsOptions));
 
-
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", StoneCut);
