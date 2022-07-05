@@ -1,4 +1,5 @@
 const express = require("express");
+const nodeMailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
@@ -111,6 +112,7 @@ app.use(cors(corsOptions));
 //app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use( '/' , express.static( 'oliveira-rodrigues-dashboard-api/build' ) );
 app.use("/", StoneCut);
 app.use("/", StoneCut45Mill);
 app.use("/", Lousada);
@@ -119,6 +121,7 @@ app.use("/", MonofioRoute);
 app.use("/", Serra3500);
 app.use("/", AlarmSettings);
 
+// notificação por SMS
 app.post("/sendnotification", (req, res) => {
   const data = req.body.data;
   console.log("Mensagem a enviar: ", data);
@@ -132,6 +135,39 @@ app.post("/sendnotification", (req, res) => {
     .done();
   res.json("Mensagem enviada!");
 });
+
+//notificação por email
+
+app.post('/send-email', function (req, res) {
+  let transporter = nodeMailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+          user: 'orodrigues.app',
+          pass: 'dhzotwfvyvqyrxpw'
+      }
+  });
+  let mailOptions = {
+      from: '"OR - App" <orodrigues.app@gmail.com>', // sender address
+      //to: req.body.to, // list of receivers
+      to: "rfreitas@morecolab.pt",
+      //subject: req.body.subject, // Subject line
+      subject: "Teste para notificações da pedreira",
+      //text: req.body.body, // plain text body
+      text: "Máquina: STONECUT\nErro: Alarm7:vedação ar baixa\n\nData: 04/07/2022 12:35\n",
+      //html: '<b>PEDREIRA - NodeJS Email TESTE</b>' // html body
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          return console.log(error);
+      }
+      console.log('Message %s sent: %s', info.messageId, info.response);
+          res.render('index');
+      });
+  });
+     
 
 app.listen(3001, () => {
   console.log("Running on port 3001");
