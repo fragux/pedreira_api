@@ -14,10 +14,10 @@ const Alarms = require('./Routes/AlarmSettings');
 const AlarmSettings = require("./Routes/AlarmSettings");
 
 
-const client = require("twilio")(
+/*const client = require("twilio")(
   "AC30d90c932ea37c30c67b90ed466a24ad",
   "d2994d9914dcabe2dd60190c96fb4b0d"
-);
+);*/
 /*
 const db = mysql.createPool({
   host: "orion.morecolab.pt",
@@ -122,7 +122,28 @@ app.use("/", Serra3500);
 app.use("/", AlarmSettings);
 
 // notificação por SMS
+
+const accountSid = "AC30d90c932ea37c30c67b90ed466a24ad";
+const authToken = "c2c2be79e7500dc91d3d134e7d9c2c21";
+const client = require('twilio')(accountSid, authToken);
+
 app.post("/sendnotification", (req, res) => {
+  const data = req.body.data;
+  console.log("Mensagem a enviar: ", data);
+  client.messages
+    .create({
+      body: `${data}`,
+      //messagingServiceSid: "MGb2518061199ca35940162d5cc523d424",
+      from : "+19897046095",
+      to: "+351937012912",
+    })
+    .then((message) => console.log(message.sid))
+    .done();
+  res.json("Mensagem enviada!");
+});
+
+// API Twilio antiga
+/*app.post("/sendnotification", (req, res) => {
   const data = req.body.data;
   console.log("Mensagem a enviar: ", data);
   client.messages
@@ -134,7 +155,7 @@ app.post("/sendnotification", (req, res) => {
     .then((message) => console.log(message.sid))
     .done();
   res.json("Mensagem enviada!");
-});
+});*/
 
 //notificação por email
 

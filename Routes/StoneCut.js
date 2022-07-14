@@ -52,6 +52,21 @@ router.get('/machine/cnc1/mes', (req, res) =>{
 
 router.get('/machine/cnc1/last', (req, res) =>{
     const sqlSelect = "SELECT * FROM CNC1  WHERE DateTime > curdate() ORDER BY DateTime Desc Limit 1";
+    //const sqlSelect = "SELECT * FROM CNC1CNC2 WHERE MachineID = 'stonecut'";
+    db.query(sqlSelect, (err, result) =>{
+        if (err){
+            console.log(err);
+        }
+        else {
+            res.send(result);
+            console.log(result);
+        }
+    })
+});
+
+router.get('/machine/cnc1/real', (req, res) =>{
+    const sqlSelect = "SELECT * FROM CNC1CNC2  WHERE MachineID = 'stonecut'";
+    //const sqlSelect = "SELECT * FROM CNC1CNC2 WHERE MachineID = 'stonecut'";
     db.query(sqlSelect, (err, result) =>{
         if (err){
             console.log(err);
