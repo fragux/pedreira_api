@@ -124,23 +124,27 @@ app.use("/", AlarmSettings);
 // notificação por SMS
 
 const accountSid = "AC30d90c932ea37c30c67b90ed466a24ad";
-const authToken = "c2c2be79e7500dc91d3d134e7d9c2c21";
+//const authToken = "c2c2be79e7500dc91d3d134e7d9c2c21";
+const authToken = "e2fbc68b821a995340faba478d8e1b95";
 const client = require('twilio')(accountSid, authToken);
+const phoneNumbers = ['+351937012912'/*, '+351916265155', '+351960395075'+*/]
 
 app.post("/sendnotification", (req, res) => {
   const data = req.body.data;
   console.log("Mensagem a enviar: ", data);
+  for(let i=0; i<phoneNumbers.length; i++){
   client.messages
     .create({
       body: `${data}`,
       //messagingServiceSid: "MGb2518061199ca35940162d5cc523d424",
       from : "+19897046095",
-      to: "+351937012912",
+      to: phoneNumbers[i],
     })
     .then((message) => console.log(message.sid))
     .done();
-  res.json("Mensagem enviada!");
-});
+  res.json("Mensagem enviada para os números: !", phoneNumbers);
+}});
+
 
 // API Twilio antiga
 /*app.post("/sendnotification", (req, res) => {
@@ -169,14 +173,15 @@ app.post('/send-email', function (req, res) {
           pass: 'dhzotwfvyvqyrxpw'
       }
   });
+  const data = req.body.data;
   let mailOptions = {
       from: '"OR - App" <orodrigues.app@gmail.com>', // sender address
       //to: req.body.to, // list of receivers
-      to: "rfreitas@morecolab.pt",
+      to: "rfreitas@morecolab.pt, tfranca@morecolab.pt, hrosse@morecolab.pt",
       //subject: req.body.subject, // Subject line
-      subject: "Teste para notificações da pedreira",
+      subject: "OR App - Notificação",
       //text: req.body.body, // plain text body
-      text: "Máquina: STONECUT\nErro: Alarm7:vedação ar baixa\n\nData: 04/07/2022 12:35\n",
+      text: `${data}`,
       //html: '<b>PEDREIRA - NodeJS Email TESTE</b>' // html body
   };
 
