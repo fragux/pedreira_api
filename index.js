@@ -127,23 +127,42 @@ const accountSid = "AC30d90c932ea37c30c67b90ed466a24ad";
 //const authToken = "c2c2be79e7500dc91d3d134e7d9c2c21";
 const authToken = "e2fbc68b821a995340faba478d8e1b95";
 const client = require('twilio')(accountSid, authToken);
-const phoneNumbers = ['+351937012912'/*, '+351916265155', '+351960395075'+*/]
+//const phoneNumbers = ['+351937012912', '+351916265155', '+351960395075']
 
 app.post("/sendnotification", (req, res) => {
   const data = req.body.data;
   console.log("Mensagem a enviar: ", data);
-  for(let i=0; i<phoneNumbers.length; i++){
+  /*
+  for(let i=0; i<phoneNumbers.length; i++){*/
   client.messages
     .create({
       body: `${data}`,
       //messagingServiceSid: "MGb2518061199ca35940162d5cc523d424",
       from : "+19897046095",
-      to: phoneNumbers[i],
+      to: '+351937012912',
     })
     .then((message) => console.log(message.sid))
     .done();
-  res.json("Mensagem enviada para os números: !", phoneNumbers);
-}});
+  res.json("Mensagem enviada!");
+});
+
+//PARA TESTAR COM VÁRIOS NÚMEROS
+/*Promise.all(
+  phoneNumbers.map(number => {
+    return client.messages.create({
+      to: number,
+      //from: process.env.TWILIO_MESSAGING_SERVICE_SID,
+      //from: "MGb2518061199ca35940162d5cc523d424",
+      from : "+19897046095",
+      body: `${data}`
+    });
+  })
+)
+  .then(messages => {
+    console.log('Messages sent!');
+  })
+  .catch(err => console.error(err));
+});*/
 
 
 // API Twilio antiga
@@ -177,7 +196,8 @@ app.post('/send-email', function (req, res) {
   let mailOptions = {
       from: '"OR - App" <orodrigues.app@gmail.com>', // sender address
       //to: req.body.to, // list of receivers
-      to: "rfreitas@morecolab.pt, tfranca@morecolab.pt, hrosse@morecolab.pt",
+      //to: "rfreitas@morecolab.pt, tfranca@morecolab.pt, hrosse@morecolab.pt",
+      to: "rfreitas@morecolab.pt",
       //subject: req.body.subject, // Subject line
       subject: "OR App - Notificação",
       //text: req.body.body, // plain text body
